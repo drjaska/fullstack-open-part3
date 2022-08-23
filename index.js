@@ -1,10 +1,12 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
 
 const http = require('http')
 
+//let because otherwise server gives "TypeError: Assignment to constant variable"
 let persons = [
     {
       id: 1,
@@ -28,8 +30,10 @@ let persons = [
     }
 ]
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
+app.use(morgan('tiny'))
+
+app.get('/', function (req, res) {
+  res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/info', (req, res) => {
@@ -55,10 +59,13 @@ app.post('/api/persons', (request, response) => {
       error: 'number is missing' 
     })
   }
-  if (persons.map(person => person.name === body.name)) {
-    return response.status(400).json({ 
-      error: 'name must be unique' 
-    })
+  for(let i = 0; i < persons.length; i++)
+  {
+    if (persons[i].name === body.name){
+      return response.status(400).json({ 
+        error: 'name must be unique'
+      })
+    }
   }
 
   const person = {
