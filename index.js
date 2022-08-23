@@ -30,7 +30,14 @@ let persons = [
     }
 ]
 
-app.use(morgan('tiny'))
+// Replaced by the formatter 2 lines down
+//app.use(morgan('tiny'))
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
+
+morgan.token('person', (request, response) => {
+  return JSON.stringify(request.body)
+})
 
 app.get('/', function (req, res) {
   res.send('<h1>Hello World!</h1>')
