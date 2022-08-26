@@ -92,7 +92,7 @@ const App = () => {
 
     const deleteContact = async (id, name) => {
       if(window.confirm(`Delete ${name} ?`)){
-        await axios.delete(`http://localhost:3001/api/persons/${id}`)
+        await axios.delete(`/api/persons/${id}`)
         
         contactService
         .getAll()
