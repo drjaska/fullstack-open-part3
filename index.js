@@ -2,14 +2,15 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+require('dotenv').config()
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
-const http = require('http')
-
 //let because otherwise server gives "TypeError: Assignment to constant variable"
+/*
 let persons = [
     {
       id: 1,
@@ -32,6 +33,7 @@ let persons = [
       number: "39-23-6423122"
     }
 ]
+*/
 
 // Replaced by the formatter 2 lines down
 //app.use(morgan('tiny'))
@@ -69,6 +71,9 @@ app.post('/api/persons', (request, response) => {
       error: 'number is missing' 
     })
   }
+  console.log(body)
+  /*
+  //do not need to care about this in 3.14
   for(let i = 0; i < persons.length; i++)
   {
     if (persons[i].name === body.name){
@@ -77,19 +82,24 @@ app.post('/api/persons', (request, response) => {
       })
     }
   }
+  */
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
+    //id: generateId(),
     name: body.name,
-    number: body.number
-  }
+    number: body.number,
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
+      response.json(person)
+    })
+    /*
     const id = Number(request.params.id)
     const person = persons.find(person => person.id === id)
     if (person) {
@@ -97,6 +107,7 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
          response.status(404).end()  
     }
+    */
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -107,10 +118,12 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

@@ -34,6 +34,7 @@ if (process.argv.length === 3) {
     })
     mongoose.connection.close()
     //Most likely not the smarterst solution, but otherwise it will add new person anyway with no arguments
+    
     process.exit(1) 
   })
 }
