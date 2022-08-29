@@ -70,6 +70,7 @@ const App = () => {
           setNewNumber('')
           return
         }
+        return
       }
 
       const noteObject = {
