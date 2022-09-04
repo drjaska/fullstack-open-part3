@@ -83,8 +83,12 @@ const App = () => {
           setPersons(persons.concat(returnedContact))
           setNewName('')
           setNewNumber('')
+          notificationMessageHandle(`Added "${newName}" to phonebook`, 0)
      })
-     notificationMessageHandle(`Added "${newName}" to phonebook`, 0)
+     .catch(error => {
+      notificationMessageHandle(error.response.data.error, 1)
+      return
+     })
    }
     
     const handleNameChange = (event) => {setNewName(event.target.value)}

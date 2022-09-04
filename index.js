@@ -24,12 +24,12 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })  
   }
 
   next(error)
 }
-
-app.use(errorHandler)
 
 app.get('/', function (req, res) {
   res.send('<h1>Hello World!</h1>')
@@ -47,7 +47,7 @@ const generateId = () => {
   return newId
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name) {
@@ -79,6 +79,7 @@ app.post('/api/persons', (request, response) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
+  .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response) => {
@@ -108,20 +109,23 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  const {name, number} = request.body
 
   const person = {
     //id?
-    name: body.name,
-    number: body.number,
+    name: name,
+    number: number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, 
+    { new: true, runValidators: true, context: 'query'  })
     .then(updatePerson => {
       response.json(updatePerson)
     })
     .catch(error => next(error))
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
