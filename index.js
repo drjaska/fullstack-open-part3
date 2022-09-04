@@ -4,7 +4,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 require('dotenv').config()
 const Person = require('./models/person')
-//const note = require('../../parts/node/models/note')
 
 app.use(express.static('build'))
 app.use(express.json())

@@ -61,13 +61,18 @@ const App = () => {
                 .then(response => {
                   setPersons(response)
                 })
+              setNewName('')
+              setNewNumber('')
               notificationMessageHandle(`Changed ${newName}'s number to ${newNumber}`, 0)
           })
           .catch(error => {
+            notificationMessageHandle(error.response.data.error, 1)
+            return
+            /*
+            //This section should define if the person is deleted or if the number validator is right. Afaik both with current example code can't be done
             notificationMessageHandle(`Failed to change ${newName}'s number to ${newNumber}. Information has already been removed from server`, 1)
+            */
           })
-          setNewName('')
-          setNewNumber('')
           return
         }
         return
