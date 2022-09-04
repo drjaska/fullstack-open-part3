@@ -23,7 +23,7 @@ const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
   name: pName,
-  number: PNumber || ""
+  number: PNumber || ''
 })
 
 if (process.argv.length === 3) {
@@ -33,8 +33,8 @@ if (process.argv.length === 3) {
       console.log(`${person.name} ${person.number}`)
     })
     mongoose.connection.close()
-    //Most likely not the smarterst solution, but otherwise it will add new person anyway with no arguments    
-    process.exit(1) 
+    //Most likely not the smarterst solution, but otherwise it will add new person anyway with no arguments
+    process.exit(1)
   })
 }
 
