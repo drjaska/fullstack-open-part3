@@ -47,6 +47,7 @@ const App = () => {
             if(newName === persons[i].name)
             {
               personId = persons[i].id
+              break;
             }
           }
           const noteObject = {
